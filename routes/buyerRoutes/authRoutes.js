@@ -44,7 +44,7 @@ router
                     return res
                         .json({
                             status: "failed",
-                            message: "User already exists!"
+                            message: "Account with that mobile number already exists"
                         })
                 } else {
                     const hashPassword = await bcrypt.hash(password, 12)
@@ -96,6 +96,14 @@ router
                 })
         }
 
+        if (mobileNo.length !== 10) {
+            return res
+                .json({
+                    status: "failed",
+                    message: "Enter valid mobile number"
+                })
+        }
+
         await User
             .findOne({ mobileNo: mobileNo })
             .then((user) => {
@@ -103,7 +111,7 @@ router
                     return res
                         .json({
                             status: "failed",
-                            message: "Account doesn't exists."
+                            message: "Invalid mobile number or password"
                         })
                 } else {
                     bcrypt

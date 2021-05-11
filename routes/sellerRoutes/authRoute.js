@@ -43,7 +43,7 @@ router
                     return res
                         .json({
                             status: "failed",
-                            message: "Account already exists"
+                            message: "Account with that mobile number already exists"
                         })
                 } else {
                     const hashPassword = await bcrypt.hash(password, 12)
