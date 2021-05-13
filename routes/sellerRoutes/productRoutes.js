@@ -15,7 +15,7 @@ router
             .then((products) => {
                 res.json({
                     status: 'success',
-                    message: 'All products for the seller',
+                    message: 'Seller products fetched successfully',
                     length: products.length,
                     products: products
                 })
@@ -32,17 +32,31 @@ router
 router
     .route('/addproduct')
     .post(async (req, res) => {
-        const { name, price, discount, highlights, description, category, quantity, ownedBy } = req.body
+        const { name, price, description, quantity, ownedBy } = req.body
 
-        if (!name || !price || !highlights || !description || !category || !quantity || !ownedBy) {
-            res.json({
+        if (!name || !price || !description || !quantity || !ownedBy) {
+            return res.json({
                 status: 'failed',
                 message: 'All fields are required'
             })
         }
 
+        if (!/\d/.test(quantity)) {
+            return res.json({
+                status: 'failed',
+                message: 'Quantity must be number'
+            })
+        }
+
+        if (!/\d/.test(price)) {
+            return res.json({
+                status: 'failed',
+                message: 'Price must be number'
+            })
+        }
+
         await Product
-            .create({ name, price, discount, highlights, description, category, ownedBy, quantity })
+            .create({ name, price, description, ownedBy, quantity })
             .then((product) => {
                 res.json({
                     status: 'success',

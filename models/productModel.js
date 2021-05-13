@@ -9,32 +9,32 @@ const productSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        default: 'https://thefinanser.com/wp-content/uploads/2019/10/Product.png'
+        default: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZHVjdHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80'
     },
     price: {
         type: Number,
         required: true,
     },
-    discount: {
-        type: Number,
-        default: 0
-    },
-    highlights: {
-        type: [String],
-        required: true,
-    },
+    // discount: {
+    //     type: Number,
+    //     default: 0
+    // },
+    // highlights: {
+    //     type: [String],
+    //     required: true,
+    // },
     description: {
-        type: Object,
+        type: String,
         required: true,
     },
     quantity: {
         type: Number,
         default: 0
     },
-    category: {
-        type: String,
-        required: true
-    },
+    // category: {
+    //     type: String,
+    //     required: true
+    // },
     ownedBy: {
         type: ObjectId,
         ref: Seller,
