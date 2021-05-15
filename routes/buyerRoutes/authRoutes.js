@@ -54,32 +54,27 @@ router
                             name: name,
                             password: hashPassword
                         })
-                        .then((user) => {
+                        .then(async (user) => {
 
-                            Cart.create({ 'ownedBy': user._id })
-                                .then(() => console.log('Cart created for user'))
-                                .catch((err) => console.log(err))
-
+                            let cart = await Cart.create({ 'ownedBy': user._id })
                             user.password = undefined
 
                             return res
                                 .status(201)
                                 .json({
                                     status: "success",
-                                    message: "User created succesfully!",
-                                    user
+                                    message: "Registration successful",
+                                    user: { ...user._doc, cartId: cart._id }
                                 })
                         })
                         .catch((err) => {
                             console.log(err)
                         })
-
                 }
             })
             .catch((err) => {
                 console.log(err)
             })
-
     })
 
 // user signin route and its handeler
@@ -111,25 +106,26 @@ router
                     return res
                         .json({
                             status: "failed",
-                            message: "Invalid mobile number or password"
+                            message: "Incorrect mobile number or password"
                         })
                 } else {
                     bcrypt
                         .compare(password, user.password)
-                        .then((match) => {
+                        .then(async (match) => {
                             if (match) {
+                                let cart = await Cart.findOne({ 'ownedBy': user._id })
                                 user.password = undefined
                                 return res
                                     .json({
                                         status: "success",
                                         message: "Login successful",
-                                        user
+                                        user: { ...user._doc, cartId: cart._id }
                                     })
                             } else {
                                 return res
                                     .json({
                                         status: "failed",
-                                        message: "Invalid mobile number or Password."
+                                        message: "Incorrect mobile number or Password."
                                     })
                             }
                         })
@@ -137,12 +133,10 @@ router
                             console.log(err)
                         })
                 }
-
             })
             .catch((err) => {
                 console.log(err)
             })
-
     })
 
 module.exports = router;
