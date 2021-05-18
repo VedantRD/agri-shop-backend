@@ -78,7 +78,7 @@ router
         const { productId } = req.body
 
         await Product
-            .findByIdAndDelete(productId)
+            .findByIdAndDelete({ _id: productId })
             .then(() => {
                 res.json({
                     status: 'success',
@@ -86,7 +86,6 @@ router
                 })
             })
             .catch((err) => { console.log(err) })
-
     })
 
 //Modify the product from product collection and also from seller
