@@ -31,8 +31,10 @@ const orderSchema = new mongoose.Schema({
         default: []
     },
     total: { type: Number, required: true },
-    buyerAddress: { type: String, required: true }
-})
+    buyerAddress: { type: String, required: true },
+    status: { type: String, default: 'Confirmed' },
+    deliveryDate: { type: Date, default: '' }
+}, { timestamps: true })
 
 const Order = mongoose.model('Order', orderSchema)
 

@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 5000
 const userRoutes = require('./Routes/buyerRoutes/authRoutes');
 const sellerRoutes = require('./Routes/sellerRoutes/authRoute');
 const sellerProductRoutes = require('./Routes/sellerRoutes/productRoutes');
+const sellerOrderRoutes = require('./Routes/sellerRoutes/orderRoutes');
 const buyerProductRoutes = require('./Routes/buyerRoutes/productRoutes');
 const buyerCartRoutes = require('./Routes/buyerRoutes/cartRoutes')
 const buyerOrderRoutes = require('./routes/buyerRoutes/orderRoutes')
@@ -45,7 +46,7 @@ app.get('/', (req, res) => {
 
 // routes
 app.use('/buyer', userRoutes, buyerProductRoutes, buyerCartRoutes, buyerOrderRoutes)
-app.use('/seller', sellerRoutes, sellerProductRoutes)
+app.use('/seller', sellerRoutes, sellerProductRoutes, sellerOrderRoutes)
 
 // start server
 app.listen(PORT, () => {

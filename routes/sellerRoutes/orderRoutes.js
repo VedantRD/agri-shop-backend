@@ -1,5 +1,4 @@
 const express = require("express");
-const Cart = require("../../models/cartModel");
 const Order = require("../../models/orderModel");
 
 const router = express.Router();
@@ -10,8 +9,8 @@ router
     .get(async (req, res) => {
         const { _id } = req.params
         await Order
-            .find({ buyer: _id })
-            .populate('seller buyer items.product')
+            .find({ seller: _id })
+            .populate('seller buyer')
             .sort('-createdAt')
             .then((orders) => {
                 res.json({
@@ -25,22 +24,20 @@ router
             })
     })
 
-// create new order  
-router
-    .route('/order/create')
-    .post(async (req, res) => {
-        const { sellerId, buyerId, total, items, buyerAddress } = req.body
-        await Order
-            .create({ seller: sellerId, buyer: buyerId, total, items, buyerAddress: 'aouegfberig' })
-            .then((order) => {
-                // empty user cart
-                Cart.findOneAndUpdate({ ownedBy: buyerId }, { 'items': [] })
-                    .then()
-                    .catch((err) => console.log(err))
+// edit order
 
+// update order status
+router
+    .route('/order/update_status')
+    .post(async (req, res) => {
+        const { orderId, status } = req.body
+        await Order
+            .findOneAndUpdate({ _id: orderId }, { 'status': status }, { new: true })
+            .populate('seller buyer items.product')
+            .then((order) => {
                 res.json({
                     status: "success",
-                    message: "order successful",
+                    message: "order updated successfully",
                     order
                 })
             })
@@ -48,5 +45,7 @@ router
                 console.log(err)
             })
     })
+
+
 
 module.exports = router
