@@ -92,15 +92,34 @@ router
 router
     .route('/updateproduct')
     .post(async (req, res) => {
-        const { _id, newProduct } = req.body;
-        console.log(_id, newProduct)
+        const { name, price, description, quantity, productId } = req.body
+
+        if (!name || !price || !description || !quantity) {
+            return res.json({
+                status: 'failed',
+                message: 'All fields are required'
+            })
+        }
+
+        if (!/\d/.test(quantity)) {
+            return res.json({
+                status: 'failed',
+                message: 'Quantity must be number'
+            })
+        }
+
+        if (!/\d/.test(price)) {
+            return res.json({
+                status: 'failed',
+                message: 'Price must be number'
+            })
+        }
         await Product
-            .findByIdAndUpdate(_id, newProduct, { new: true })
-            .then((product) => {
+            .findByIdAndUpdate({ _id: productId }, { name, price, description, quantity }, { new: true })
+            .then(() => {
                 res.json({
                     status: 'success',
                     message: 'Product Information updated succesfully',
-                    product
                 })
             })
             .catch((err) => {
