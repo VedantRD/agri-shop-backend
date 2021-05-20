@@ -10,7 +10,7 @@ router
         const { _id } = req.params
         await Order
             .find({ seller: _id })
-            .populate('seller buyer')
+            .populate('seller buyer items.product')
             .sort('-createdAt')
             .then((orders) => {
                 res.json({

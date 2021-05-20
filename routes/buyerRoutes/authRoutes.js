@@ -11,9 +11,9 @@ const router = express.Router();
 router
     .route('/signup')
     .post(async (req, res) => {
-        const { mobileNo, name, password } = req.body
+        const { mobileNo, name, password, address } = req.body
 
-        if (!name || !mobileNo || !password) {
+        if (!name.trim() || !mobileNo || !password || !address.trim()) {
             return res
                 .json({
                     status: "failed",
@@ -51,8 +51,9 @@ router
                     await User
                         .create({
                             mobileNo: parseInt(mobileNo),
-                            name: name,
-                            password: hashPassword
+                            name,
+                            password: hashPassword,
+                            address
                         })
                         .then(async (user) => {
 
