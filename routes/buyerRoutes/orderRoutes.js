@@ -29,9 +29,9 @@ router
 router
     .route('/order/create')
     .post(async (req, res) => {
-        const { sellerId, buyerId, total, items, buyerAddress } = req.body
+        const { sellerId, buyerId, total, items, buyerAddress, deliveryCharges } = req.body
         await Order
-            .create({ seller: sellerId, buyer: buyerId, total, items, buyerAddress: 'aouegfberig' })
+            .create({ seller: sellerId, buyer: buyerId, total, deliveryCharges, items, buyerAddress })
             .then((order) => {
                 // empty user cart
                 Cart.findOneAndUpdate({ ownedBy: buyerId }, { 'items': [] })
