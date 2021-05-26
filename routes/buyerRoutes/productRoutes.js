@@ -11,6 +11,7 @@ router
 
         await Product
             .find({}, { __v: 0 })
+            .populate('ownedBy', { password: 0, __v: 0 })
             .then((products) => {
                 res.json({
                     status: "success",

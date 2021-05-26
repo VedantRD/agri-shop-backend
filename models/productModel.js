@@ -35,6 +35,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    unit: {
+        type: String,
+        required: true
+    },
     ownedBy: {
         type: ObjectId,
         ref: Seller,

@@ -32,9 +32,9 @@ router
 router
     .route('/addproduct')
     .post(async (req, res) => {
-        const { name, price, description, quantity, ownedBy, category } = req.body
+        const { name, price, description, quantity, ownedBy, category, unit } = req.body
 
-        if (!name || !price || !description || !quantity || !ownedBy || !category) {
+        if (!name || !price || !description || !quantity || !ownedBy || !category || !unit) {
             return res.json({
                 status: 'failed',
                 message: 'All fields are required'
@@ -56,7 +56,7 @@ router
         }
 
         await Product
-            .create({ name, price, description, ownedBy, quantity, category })
+            .create({ name, price, description, ownedBy, quantity, category, unit })
             .then((product) => {
                 res.json({
                     status: 'success',
@@ -92,9 +92,9 @@ router
 router
     .route('/updateproduct')
     .post(async (req, res) => {
-        const { name, price, description, quantity, productId } = req.body
+        const { name, price, description, quantity, productId, category, unit } = req.body
 
-        if (!name || !price || !description || !quantity) {
+        if (!name || !price || !description || !quantity || !category || !unit) {
             return res.json({
                 status: 'failed',
                 message: 'All fields are required'
@@ -115,7 +115,7 @@ router
             })
         }
         await Product
-            .findByIdAndUpdate({ _id: productId }, { name, price, description, quantity }, { new: true })
+            .findByIdAndUpdate({ _id: productId }, { name, price, description, quantity, category, unit }, { new: true })
             .then(() => {
                 res.json({
                     status: 'success',
