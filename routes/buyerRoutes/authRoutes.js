@@ -114,13 +114,13 @@ router
                         .compare(password, user.password)
                         .then(async (match) => {
                             if (match) {
-                                let cart = await Cart.findOne({ 'ownedBy': user._id })
+                                let cart = await Cart.findOne({ 'ownedBy': user._id }).populate('items.product')
                                 user.password = undefined
                                 return res
                                     .json({
                                         status: "success",
                                         message: "Login successful",
-                                        user: { ...user._doc, cartId: cart._id }
+                                        user: { ...user._doc, cartId: cart._id, cartItems: cart.items }
                                     })
                             } else {
                                 return res

@@ -39,7 +39,7 @@ router
             let updateIndex = items.findIndex(ele => item.product._id == ele.product)
             items[updateIndex].quantity += item.quantity
             Cart.findByIdAndUpdate({ _id: cartId }, { 'items': items }, { new: true })
-                .populate('items items.product')
+                .populate('items.product')
                 .then(cart => {
                     res.json({
                         status: 'success',
@@ -81,7 +81,7 @@ router
     .post(async (req, res) => {
         const { cartId, items } = req.body
         Cart.findByIdAndUpdate({ _id: cartId }, { 'items': items }, { new: true })
-            .populate('items items.product')
+            .populate('items.product')
             .then(cart => {
                 res.json({
                     status: 'success',

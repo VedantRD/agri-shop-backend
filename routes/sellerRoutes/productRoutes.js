@@ -32,7 +32,7 @@ router
 router
     .route('/addproduct')
     .post(async (req, res) => {
-        const { name, price, description, quantity, ownedBy, category, unit } = req.body
+        const { name, price, description, quantity, ownedBy, category, unit, image } = req.body
 
         if (!name || !price || !description || !quantity || !ownedBy || !category || !unit) {
             return res.json({
@@ -56,7 +56,7 @@ router
         }
 
         await Product
-            .create({ name, price, description, ownedBy, quantity, category, unit })
+            .create({ name, price, description, ownedBy, quantity, category, unit, image })
             .then((product) => {
                 res.json({
                     status: 'success',
