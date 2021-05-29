@@ -32,13 +32,18 @@ router
 router
     .route('/addproduct')
     .post(async (req, res) => {
-        const { name, price, description, quantity, ownedBy, category, unit, image } = req.body
+        const { name, price, description, quantity, ownedBy, category, unit } = req.body
+        let { image } = req.body
 
         if (!name || !price || !description || !quantity || !ownedBy || !category || !unit) {
             return res.json({
                 status: 'failed',
                 message: 'All fields are required'
             })
+        }
+
+        if (image === '') {
+            image = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZHVjdHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80'
         }
 
         if (!/\d/.test(quantity)) {
@@ -93,12 +98,17 @@ router
     .route('/updateproduct')
     .post(async (req, res) => {
         const { name, price, description, quantity, productId, category, unit } = req.body
+        let { image } = req.body
 
         if (!name || !price || !description || !quantity || !category || !unit) {
             return res.json({
                 status: 'failed',
                 message: 'All fields are required'
             })
+        }
+
+        if (image === '') {
+            image = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZHVjdHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80'
         }
 
         if (!/\d/.test(quantity)) {
@@ -115,8 +125,9 @@ router
             })
         }
         await Product
-            .findByIdAndUpdate({ _id: productId }, { name, price, description, quantity, category, unit }, { new: true })
-            .then(() => {
+            .findByIdAndUpdate({ _id: productId }, { name, price, description, quantity, category, unit, image }, { new: true })
+            .then((product) => {
+                console.log(product.image)
                 res.json({
                     status: 'success',
                     message: 'Product Information updated succesfully',
