@@ -46,6 +46,25 @@ router
             })
     })
 
+// update order delivery dates
+router
+    .route('/order/update_date')
+    .post(async (req, res) => {
+        const { orderId, date } = req.body
+        await Order
+            .findOneAndUpdate({ _id: orderId }, { 'deliveryDate': date }, { new: true })
+            .populate('seller buyer items.product')
+            .then((order) => {
+                res.json({
+                    status: "success",
+                    message: "order updated successfully",
+                    order
+                })
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    })
 
 
 module.exports = router
