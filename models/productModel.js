@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        default: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZHVjdHxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&w=1000&q=80'
+        default: 'https://listonic.com/wp-content/uploads/2018/12/grocery-bag-1-3.png'
     },
     price: {
         type: Number,
