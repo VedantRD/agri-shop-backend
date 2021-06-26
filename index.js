@@ -9,6 +9,7 @@ const sellerOrderRoutes = require('./Routes/sellerRoutes/orderRoutes');
 const buyerProductRoutes = require('./Routes/buyerRoutes/productRoutes');
 const buyerCartRoutes = require('./Routes/buyerRoutes/cartRoutes')
 const buyerOrderRoutes = require('./routes/buyerRoutes/orderRoutes')
+const commonRoutes = require('./routes/common/commonRoutes')
 
 const app = express();
 app.use(express.json());
@@ -45,6 +46,7 @@ app.get('/', (req, res) => {
 })
 
 // routes
+app.use('/', commonRoutes)
 app.use('/buyer', userRoutes, buyerProductRoutes, buyerCartRoutes, buyerOrderRoutes)
 app.use('/seller', sellerRoutes, sellerProductRoutes, sellerOrderRoutes)
 
