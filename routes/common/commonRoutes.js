@@ -154,4 +154,70 @@ router
         }
     })
 
+// Update Profile
+router
+    .route('/update_profile')
+    .post(async (req, res) => {
+
+        const { id, name, mobileNo, address, shopname, role } = req.body
+
+        if (!name.trim() || !mobileNo || !id || !address.trim()) {
+            return res
+                .json({
+                    status: "failed",
+                    message: "All fields are required."
+                })
+        }
+        if (mobileNo.length !== 10) {
+            return res
+                .json({
+                    status: "failed",
+                    message: "Enter valid mobile number"
+                })
+        }
+        if (role === 'seller' && !shopname.trim()) {
+            return res
+                .json({
+                    status: "failed",
+                    message: "All fields are required."
+                })
+        }
+
+        if (role == 'buyer') {
+            await User
+                .findByIdAndUpdate(id, { name, mobileNo, address }, { new: true })
+                .then(async (user) => {
+                    user.password = undefined
+                    return res
+                        .status(201)
+                        .json({
+                            status: "success",
+                            message: "Profile successfully updated",
+                            user
+                        })
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }
+        else {
+            await Seller
+                .findByIdAndUpdate(id, { name, mobileNo, address, shopname }, { new: true })
+                .then(async (user) => {
+                    user.password = undefined
+                    return res
+                        .status(201)
+                        .json({
+                            status: "success",
+                            message: "Profile successfully updated",
+                            user
+                        })
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }
+
+
+    })
 module.exports = router;
