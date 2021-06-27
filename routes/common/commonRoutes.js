@@ -185,39 +185,156 @@ router
 
         if (role == 'buyer') {
             await User
-                .findByIdAndUpdate({ _id: userId }, { name, mobileNo, address }, { new: true })
+                .findOne({ _id: { $ne: userId }, mobileNo: mobileNo })
                 .then(async (user) => {
-                    user.password = undefined
-                    return res
-                        .status(201)
-                        .json({
-                            status: "success",
-                            message: "Profile successfully updated",
-                            user
+                    if (user) {
+                        return res.json({
+                            status: "failed",
+                            message: "Account already exist with mobile number"
                         })
+                    } else {
+                        await User
+                            .findByIdAndUpdate({ _id: userId }, { name, mobileNo, address }, { new: true })
+                            .then(async (user) => {
+                                user.password = undefined
+                                return res
+                                    .status(201)
+                                    .json({
+                                        status: "success",
+                                        message: "Profile successfully updated",
+                                        user
+                                    })
+                            })
+                            .catch((err) => {
+                                console.log(err)
+                            })
+                    }
                 })
-                .catch((err) => {
-                    console.log(err)
-                })
+                .catch(err => console.log(err))
         }
         else {
             await Seller
-                .findByIdAndUpdate({ _id: userId }, { name, mobileNo, address, shopname }, { new: true })
+                .findOne({ _id: { $ne: userId }, mobileNo: mobileNo })
                 .then(async (user) => {
-                    user.password = undefined
-                    return res
-                        .status(201)
-                        .json({
-                            status: "success",
-                            message: "Profile successfully updated",
-                            user
+                    if (user) {
+                        return res.json({
+                            status: "failed",
+                            message: "Account already exist with mobile number"
+                        })
+                    } else {
+                        await Seller
+                            .findByIdAndUpdate({ _id: userId }, { name, mobileNo, address, shopname }, { new: true })
+                            .then(async (user) => {
+                                user.password = undefined
+                                return res
+                                    .status(201)
+                                    .json({
+                                        status: "success",
+                                        message: "Profile successfully updated",
+                                        user
+                                    })
+                            })
+                            .catch((err) => {
+                                console.log(err)
+                            })
+                    }
+                })
+                .catch(err => console.log(err))
+        }
+
+
+    })
+
+//Change Password
+router
+    .route('/change_password')
+    .post(async (req, res) => {
+        const { userId, oldPassword, newPassword, role } = req.body
+
+        if (!oldPassword || !newPassword || !userId) {
+            return res
+                .json({
+                    status: "failed",
+                    message: "All fields are required."
+                })
+        }
+
+        if (newPassword.length < 8) {
+            return res
+                .json({
+                    status: "failed",
+                    message: "Password must contain atleast 8 characters"
+                })
+        }
+
+        const hashPassword = await bcrypt.hash(newPassword, 12)
+        if (role == 'buyer') {
+            await User
+                .findById(userId)
+                .then((user) => {
+                    bcrypt
+                        .compare(oldPassword, user.password)
+                        .then(async (match) => {
+                            if (match) {
+                                await User
+                                    .findByIdAndUpdate(userId, { password: hashPassword }, { new: true })
+                                    .then(() => {
+                                        return res
+                                            .json({
+                                                status: "success",
+                                                message: "Password successfully updated"
+                                            })
+                                    })
+                                    .catch(err => console.log(err))
+                            } else {
+                                return res
+                                    .json({
+                                        status: "failed",
+                                        message: "Incorrect old password"
+                                    })
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err)
+                        })
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        } else {
+            await Seller
+                .findById(userId)
+                .then((user) => {
+                    bcrypt
+                        .compare(oldPassword, user.password)
+                        .then(async (match) => {
+                            if (match) {
+                                await Seller
+                                    .findByIdAndUpdate(userId, { password: hashPassword }, { new: true })
+                                    .then(() => {
+                                        return res
+                                            .json({
+                                                status: "success",
+                                                message: "Password successfully updated"
+                                            })
+                                    })
+                                    .catch(err => console.log(err))
+                            } else {
+                                return res
+                                    .json({
+                                        status: "failed",
+                                        message: "Incorrect old password"
+                                    })
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err)
                         })
                 })
                 .catch((err) => {
                     console.log(err)
                 })
         }
-
 
     })
 module.exports = router;
