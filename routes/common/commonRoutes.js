@@ -1,6 +1,6 @@
 const express = require("express")
 const bcrypt = require('bcryptjs')
-const Vonage = require('@vonage/server-sdk')
+const fast2sms = require('fast-two-sms')
 const User = require("../../models/userModel");
 const Seller = require("../../models/sellerModel");
 
@@ -61,40 +61,33 @@ router
         let otp = (Math.floor(100000 + Math.random() * 900000)).toString()
 
         // send otp sms on mobile
-        const vonage = new Vonage({
-            apiKey: "04bb3329",
-            apiSecret: "HMg6BJiHslrNHUGi"
-        })
-        const from = "Agri Shop"
-        const to = `91${mobileNo}`
-        const text = 'OTP for reset password is' + otp
 
-        vonage.message.sendSms(from, to, text, (err, responseData) => {
-            if (err) {
-                console.log(err)
-                return res
-                    .json({
-                        status: "failed",
-                        message: "Sorry OTP could not be sent, Please try again later"
-                    })
-            } else {
-                if (responseData.messages[0]['status'] === "0") {
-                    return res
-                        .json({
-                            status: "success",
-                            message: "OTP sent to mobile",
-                            otp
-                        })
-                } else {
-                    console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-                    return res
-                        .json({
-                            status: "failed",
-                            message: `Message failed with error: ${responseData.messages[0]['error-text']}`
-                        })
-                }
-            }
-        })
+        const from = "Agri Shop"
+        const text = 'Agrishop \nOTP for reset password is ' + otp
+
+        var options = {
+            authorization: process.env.FAST2SMS_API_KEY,
+            message: text,
+            numbers: [mobileNo],
+            sender_id: from
+        }
+        const response = await fast2sms.sendMessage(options)
+        if (response.return == true) {
+            return res
+                .json({
+                    status: "success",
+                    message: "OTP sent to mobile",
+                    otp
+                })
+        }
+        else {
+            return res
+                .json({
+                    status: "failed",
+                    message: "Sorry OTP could not be sent, Please try again later"
+                })
+        }
+
 
     })
 
