@@ -159,9 +159,9 @@ router
     .route('/update_profile')
     .post(async (req, res) => {
 
-        const { id, name, mobileNo, address, shopname, role } = req.body
+        const { userId, name, mobileNo, address, shopname, role } = req.body
 
-        if (!name.trim() || !mobileNo || !id || !address.trim()) {
+        if (!name.trim() || !mobileNo || !userId || !address.trim()) {
             return res
                 .json({
                     status: "failed",
@@ -185,7 +185,7 @@ router
 
         if (role == 'buyer') {
             await User
-                .findByIdAndUpdate(id, { name, mobileNo, address }, { new: true })
+                .findByIdAndUpdate({ _id: userId }, { name, mobileNo, address }, { new: true })
                 .then(async (user) => {
                     user.password = undefined
                     return res
@@ -202,7 +202,7 @@ router
         }
         else {
             await Seller
-                .findByIdAndUpdate(id, { name, mobileNo, address, shopname }, { new: true })
+                .findByIdAndUpdate({ _id: userId }, { name, mobileNo, address, shopname }, { new: true })
                 .then(async (user) => {
                     user.password = undefined
                     return res
